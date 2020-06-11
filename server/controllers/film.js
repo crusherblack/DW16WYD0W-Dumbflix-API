@@ -16,9 +16,7 @@ exports.getFilm = async (req, res) => {
 
 		if (film) {
 			return res.send({
-				data: {
-					film
-				}
+				data: film
 			});
 		} else {
 			return res.status(400).send({ message: 'Films Not Found' });
@@ -47,12 +45,61 @@ exports.getDetailFilm = async (req, res) => {
 
 		if (film) {
 			return res.send({
-				data: {
-					film
-				}
+				data: film
 			});
 		} else {
 			return res.status(400).send({ message: 'Films Not Found' });
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+exports.addFilm = async (req, res) => {
+	try {
+		const schema = Joi.object({
+			title: Joi.string().min(3).required(),
+			thumbnailFilm: Joi.string().required(),
+			year: Joi.required(),
+			category: Joi.required(),
+			description: Joi.string().min(10).required()
+		});
+		const { error } = schema.validate(req.body);
+
+		if (error)
+			return res.status(400).send({
+				error: {
+					message: error.details[0].message
+				}
+			});
+
+		const { category } = req.body;
+
+		const film = await Film.create({
+			...req.body,
+			categoryId: category.id
+		});
+
+		if (film) {
+			const filmResult = await Film.findOne({
+				where: {
+					id: film.id
+				},
+				include: {
+					model: Category,
+					as: 'category',
+					attributes: {
+						exclude: [ 'createdAt', 'updatedAt' ]
+					}
+				},
+				attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+			});
+
+			return res.send({
+				data: filmResult
+			});
+		} else {
+			return res.status(400).send({ message: 'Please Try Again' });
 		}
 	} catch (error) {
 		console.log(error);

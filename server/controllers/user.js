@@ -9,9 +9,7 @@ exports.getUser = async (req, res) => {
 
 		if (user) {
 			return res.send({
-				data: {
-					user
-				}
+				data: user
 			});
 		} else {
 			return res.status(500).send({ message: 'Server Error' });
