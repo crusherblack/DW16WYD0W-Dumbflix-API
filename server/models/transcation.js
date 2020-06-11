@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	Transcation.associate = function(models) {
 		Transcation.belongsTo(models.User, {
-			as: 'userId',
+			as: 'userld',
 			foreignKey: {
 				name: 'userId'
 			}

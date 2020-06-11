@@ -18,26 +18,25 @@ exports.login = async (req, res) => {
 				}
 			});
 
-		const fakeData = {
-			id: 1,
-			email: 'iis@gmail.com',
-			password: 'lovespiderman'
-		};
-
 		const { email, password } = req.body;
+		const user = await User.findOne({
+			where: { email }
+		});
 
-		if (fakeData.email == email && fakeData.password) {
-			const token = jwt.sign({ id: fakeData.id }, process.env.SECRET_KEY);
+		if (!user) return res.status(400).send({ message: 'Invalid Login' });
 
-			return res.send({
-				data: {
-					email,
-					token
-				}
-			});
-		} else {
-			return res.status(400).send({ message: 'Invalid Login' });
-		}
+		const validPass = await bcrypt.compare(password, user.password);
+
+		if (!validPass) return res.status(400).send({ message: 'Invalid Login' });
+
+		const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
+
+		res.send({
+			data: {
+				email,
+				token
+			}
+		});
 	} catch (error) {
 		console.log(error);
 	}
