@@ -79,8 +79,14 @@ exports.register = async (req, res) => {
 				}
 			});
 
+		const subscribe = false;
+
 		const hashedPassword = await bcrypt.hash(password, 10);
-		const user = await User.create({ ...req.body, password: hashedPassword });
+		const user = await User.create({
+			...req.body,
+			password: hashedPassword,
+			subscribe
+		});
 		const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
 
 		res.send({
