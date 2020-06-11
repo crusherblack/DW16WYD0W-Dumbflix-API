@@ -164,3 +164,32 @@ exports.editFilm = async (req, res) => {
 		console.log(error);
 	}
 };
+
+exports.deleteFilm = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const film = await Film.findOne({
+			where: {
+				id
+			}
+		});
+
+		if (film) {
+			const deleteFilm = await Film.destroy({
+				where: {
+					id
+				}
+			});
+
+			return res.send({
+				data: {
+					id
+				}
+			});
+		} else {
+			return res.status(400).send({ message: 'User Not Found' });
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};

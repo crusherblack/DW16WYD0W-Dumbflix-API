@@ -3,7 +3,13 @@ const router = express.Router();
 
 const { login, register } = require('../controllers/auth');
 const { getUser, deleteUser } = require('../controllers/user');
-const { getFilm, getDetailFilm, addFilm, editFilm } = require('../controllers/film');
+const {
+	getFilm,
+	getDetailFilm,
+	addFilm,
+	editFilm,
+	deleteFilm
+} = require('../controllers/film');
 
 const { auth } = require('../middleware/auth');
 
@@ -20,5 +26,6 @@ router.get('/film', getFilm);
 router.get('/film/:id', getDetailFilm);
 router.post('/film', auth, addFilm);
 router.patch('/film/:id', auth, editFilm);
+router.delete('/film/:id', auth, deleteFilm);
 
 module.exports = router;
