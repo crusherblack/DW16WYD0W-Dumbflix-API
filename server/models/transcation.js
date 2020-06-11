@@ -3,8 +3,8 @@ module.exports = (sequelize, DataTypes) => {
 	const Transcation = sequelize.define(
 		'Transcation',
 		{
-			startDate: DataTypes.DATE,
-			dueDate: DataTypes.DATE,
+			startDate: DataTypes.DATEONLY,
+			dueDate: DataTypes.DATEONLY,
 			userId: DataTypes.INTEGER,
 			attache: DataTypes.STRING,
 			status: DataTypes.STRING
