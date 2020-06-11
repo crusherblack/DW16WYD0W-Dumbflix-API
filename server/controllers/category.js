@@ -46,3 +46,43 @@ exports.addCategory = async (req, res) => {
 		console.log(error);
 	}
 };
+
+exports.editCategory = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const schema = Joi.object({
+			name: Joi.string().min(3).required()
+		});
+		const { error } = schema.validate(req.body);
+
+		if (error)
+			return res.status(400).send({
+				error: {
+					message: error.details[0].message
+				}
+			});
+
+		const category = await Category.update(req.body, {
+			where: {
+				id
+			}
+		});
+
+		if (category) {
+			const categoryResult = await Category.findOne({
+				where: {
+					id
+				},
+				attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+			});
+
+			return res.send({
+				data: categoryResult
+			});
+		} else {
+			return res.status(400).send({ message: 'Please Try Again' });
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
