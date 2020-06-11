@@ -175,7 +175,7 @@ exports.deleteFilm = async (req, res) => {
 		});
 
 		if (film) {
-			const deleteFilm = await Film.destroy({
+			await Film.destroy({
 				where: {
 					id
 				}

@@ -86,3 +86,32 @@ exports.editCategory = async (req, res) => {
 		console.log(error);
 	}
 };
+
+exports.deleteCategory = async (req, res) => {
+	try {
+		const { id } = req.params;
+		const film = await Category.findOne({
+			where: {
+				id
+			}
+		});
+
+		if (film) {
+			await Category.destroy({
+				where: {
+					id
+				}
+			});
+
+			return res.send({
+				data: {
+					id
+				}
+			});
+		} else {
+			return res.status(400).send({ message: 'Category Not Found' });
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
