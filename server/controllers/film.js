@@ -11,7 +11,7 @@ exports.getFilm = async (req, res) => {
 					exclude: [ 'createdAt', 'updatedAt' ]
 				}
 			},
-			attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+			attributes: { exclude: [ 'createdAt', 'updatedAt', 'categoryId' ] }
 		});
 
 		if (film) {
@@ -40,7 +40,7 @@ exports.getDetailFilm = async (req, res) => {
 					exclude: [ 'createdAt', 'updatedAt' ]
 				}
 			},
-			attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+			attributes: { exclude: [ 'createdAt', 'updatedAt', 'categoryId' ] }
 		});
 
 		if (film) {
@@ -100,6 +100,65 @@ exports.addFilm = async (req, res) => {
 			});
 		} else {
 			return res.status(400).send({ message: 'Please Try Again' });
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
+exports.editFilm = async (req, res) => {
+	try {
+		const schema = Joi.object({
+			title: Joi.string().min(3).required(),
+			thumbnailFilm: Joi.string().required(),
+			year: Joi.required(),
+			category: Joi.required(),
+			description: Joi.string().min(10).required()
+		});
+		const { error } = schema.validate(req.body);
+
+		if (error)
+			return res.status(400).send({
+				error: {
+					message: error.details[0].message
+				}
+			});
+
+		const { id } = req.params;
+
+		const { category: { id: categoryId } } = req.body;
+
+		const film = await Film.update(
+			{
+				...req.body,
+				categoryId
+			},
+			{
+				where: {
+					id
+				}
+			}
+		);
+
+		if (film) {
+			const filmResult = await Film.findOne({
+				where: {
+					id
+				},
+				include: {
+					model: Category,
+					as: 'category',
+					attributes: {
+						exclude: [ 'createdAt', 'updatedAt' ]
+					}
+				},
+				attributes: { exclude: [ 'createdAt', 'updatedAt', 'categoryId' ] }
+			});
+			return res.send({
+				data: filmResult
+			});
+		} else {
+			return res.status(400).send({ message: 'Films Not Found' });
 		}
 	} catch (error) {
 		console.log(error);
