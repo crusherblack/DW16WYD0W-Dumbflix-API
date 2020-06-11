@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
 	);
 	Film.associate = function(models) {
 		Film.belongsTo(models.Category, {
-			as: 'parent',
+			as: 'category',
 			foreignKey: {
 				name: 'categoryId'
 			}
