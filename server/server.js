@@ -11,4 +11,4 @@ app.use('/api/v1', router);
 
 app.listen(port, () => console.log(`Server is running at http://localhost:${port}`));
 
-('asal2ajacuy');
+// SECRET_KEY = asal2ajacuy
