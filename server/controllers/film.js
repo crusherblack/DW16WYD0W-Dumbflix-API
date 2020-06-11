@@ -187,7 +187,7 @@ exports.deleteFilm = async (req, res) => {
 				}
 			});
 		} else {
-			return res.status(400).send({ message: 'User Not Found' });
+			return res.status(400).send({ message: 'Film Not Found' });
 		}
 	} catch (error) {
 		console.log(error);
