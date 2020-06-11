@@ -13,7 +13,7 @@ const {
 	deleteFilm
 } = require('../controllers/film');
 
-const { getCategory } = require('../controllers/category');
+const { getCategory, addCategory } = require('../controllers/category');
 
 const { auth } = require('../middleware/auth');
 
@@ -34,5 +34,6 @@ router.delete('/film/:id', auth, deleteFilm);
 
 // Category Routes
 router.get('/category', getCategory);
+router.post('/category', auth, addCategory);
 
 module.exports = router;
