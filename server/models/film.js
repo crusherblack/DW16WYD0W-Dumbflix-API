@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
 			foreignKey: {
 				name: 'categoryId'
 			}
-		});
+		}),
+			Film.hasMany(models.Episode);
 	};
 	return Film;
 };
