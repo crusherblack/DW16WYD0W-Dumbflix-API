@@ -29,7 +29,7 @@ const {
 	deleteTransaction
 } = require('../controllers/transaction');
 
-const { addEpisode } = require('../controllers/episode');
+const { addEpisode, getEpisodesByFilm } = require('../controllers/episode');
 
 // Authentication Routes
 router.post('/register', register);
@@ -60,5 +60,6 @@ router.delete('/transaction/:id', auth, authAdmin, deleteTransaction);
 
 // Episode Routes
 router.post('/episode', auth, authAdmin, addEpisode);
+router.get('/film/:id/episodes', auth, authAdmin, getEpisodesByFilm);
 
 module.exports = router;

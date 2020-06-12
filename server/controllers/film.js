@@ -26,6 +26,48 @@ exports.getFilm = async (req, res) => {
 	}
 };
 
+//gak pake tapi ini adalah hasMany Relationship
+exports.getFilmEpisodeCategory = async (req, res) => {
+	try {
+		const { id: IdFilm } = req.params;
+
+		const film = await Film.findAll({
+			include: [
+				{
+					model: Episode,
+					as: 'episodes',
+					attributes: {
+						exclude: [ 'createdAt', 'updatedAt' ]
+					}
+				},
+				{
+					model: Category,
+					as: 'category',
+					attributes: {
+						exclude: [ 'createdAt', 'updatedAt' ]
+					}
+				}
+			],
+
+			attributes: {
+				exclude: [ 'createdAt', 'updatedAt', 'categoryId' ]
+			}
+		});
+
+		//return console.log(film);
+
+		if (film) {
+			return res.send({
+				data: film
+			});
+		} else {
+			return res.status(400).send({ message: 'Films Not Found' });
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
+
 exports.getDetailFilm = async (req, res) => {
 	try {
 		const { id } = req.params;

@@ -1,5 +1,47 @@
-const { Episode, Film } = require('../models');
+const { Episode, Film, Category } = require('../models');
 const Joi = require('@hapi/joi');
+
+exports.getEpisodesByFilm = async (req, res) => {
+	try {
+		const { id: filmId } = req.params;
+
+		const film = await Episode.findAll({
+			where: {
+				filmId
+			},
+			include: {
+				model: Film,
+				as: 'film',
+				attributes: {
+					exclude: [ 'createdAt', 'updatedAt', 'categoryId' ]
+				},
+				include: {
+					model: Category,
+					as: 'category',
+					attributes: {
+						exclude: [ 'createdAt', 'updatedAt' ]
+					}
+				}
+			},
+
+			attributes: {
+				exclude: [ 'createdAt', 'updatedAt', 'FilmId', 'filmId' ]
+			}
+		});
+
+		//return console.log(film);
+
+		if (film) {
+			return res.send({
+				data: film
+			});
+		} else {
+			return res.status(400).send({ message: 'Films Not Found' });
+		}
+	} catch (error) {
+		console.log(error);
+	}
+};
 
 exports.addEpisode = async (req, res) => {
 	try {
