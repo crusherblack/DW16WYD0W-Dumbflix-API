@@ -21,6 +21,12 @@ const {
 } = require('../controllers/category');
 
 const { auth } = require('../middleware/auth');
+const {
+	addTransaction,
+	getTransaction,
+	editTransaction,
+	deleteTransaction
+} = require('../controllers/transaction');
 
 // Authentication Routes
 router.post('/register', register);
@@ -42,5 +48,11 @@ router.get('/category', getCategory);
 router.post('/category', auth, addCategory);
 router.patch('/category/:id', auth, editCategory);
 router.delete('/category/:id', auth, deleteCategory);
+
+// Transcation Routes
+router.get('/transaction', getTransaction);
+router.post('/transaction', auth, addTransaction);
+router.patch('/transaction/:id', auth, editTransaction);
+router.delete('/transaction/:id', auth, deleteTransaction);
 
 module.exports = router;

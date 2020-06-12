@@ -60,7 +60,7 @@ exports.addFilm = async (req, res) => {
 		const schema = Joi.object({
 			title: Joi.string().min(3).required(),
 			thumbnailFilm: Joi.string().required(),
-			year: Joi.required(),
+			year: Joi.number().integer().min(1900).max(2020).required(),
 			category: Joi.required(),
 			description: Joi.string().min(10).required()
 		});
