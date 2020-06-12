@@ -36,8 +36,14 @@ exports.addCategory = async (req, res) => {
 		const category = await Category.create(req.body);
 
 		if (category) {
+			const categoryResult = await Category.findOne({
+				where: {
+					id: category.id
+				},
+				attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+			});
 			return res.send({
-				data: category
+				data: categoryResult
 			});
 		} else {
 			return res.status(400).send({ message: 'Please Try Again' });
