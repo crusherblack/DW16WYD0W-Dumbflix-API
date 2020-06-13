@@ -29,7 +29,13 @@ const {
 	deleteTransaction
 } = require('../controllers/transaction');
 
-const { addEpisode, getEpisodesByFilm } = require('../controllers/episode');
+const {
+	addEpisode,
+	getEpisodesByFilm,
+	getDetailEpisode,
+	editEpisode,
+	deleteEpisode
+} = require('../controllers/episode');
 
 // Authentication Routes
 router.post('/register', register);
@@ -61,5 +67,8 @@ router.delete('/transaction/:id', auth, authAdmin, deleteTransaction);
 // Episode Routes
 router.post('/episode', auth, authAdmin, addEpisode);
 router.get('/film/:id/episodes', auth, authAdmin, getEpisodesByFilm);
+router.get('/film/:idFilm/episodes/:idEpisode', auth, authAdmin, getDetailEpisode);
+router.get('/episode/:id', auth, authAdmin, editEpisode);
+router.delete('/episode/:id', auth, authAdmin, deleteEpisode);
 
 module.exports = router;
