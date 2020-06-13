@@ -40,13 +40,23 @@ exports.getEpisodesByFilm = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };
 
 exports.getDetailEpisode = async (req, res) => {
 	try {
 		const { idFilm, idEpisode } = req.params;
-		const film = await Episode.findAll({
+
+		const film = await Film.findOne({
+			where: {
+				id: idFilm
+			}
+		});
+
+		if (!film) return res.status(400).send({ message: 'Film Not Found' });
+
+		const episode = await Episode.findAll({
 			where: {
 				id: idEpisode
 			},
@@ -70,15 +80,16 @@ exports.getDetailEpisode = async (req, res) => {
 			}
 		});
 
-		if (film) {
+		if (episode) {
 			return res.send({
-				data: film
+				data: episode
 			});
 		} else {
-			return res.status(400).send({ message: 'Films Not Found' });
+			return res.status(400).send({ message: 'Episode Not Found' });
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };
 
@@ -124,6 +135,7 @@ exports.addEpisode = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };
 
@@ -184,6 +196,7 @@ exports.editEpisode = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };
 
@@ -213,5 +226,6 @@ exports.deleteEpisode = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };

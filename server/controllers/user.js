@@ -16,6 +16,7 @@ exports.getUser = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };
 
@@ -57,5 +58,6 @@ exports.deleteUser = async (req, res) => {
 		}
 	} else {
 		return res.status(400).send({ message: 'Unauthorized User' });
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };

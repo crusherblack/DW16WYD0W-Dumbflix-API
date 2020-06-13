@@ -23,6 +23,7 @@ exports.getFilm = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };
 
@@ -65,6 +66,7 @@ exports.getFilmEpisodeCategory = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };
 
@@ -94,6 +96,7 @@ exports.getDetailFilm = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };
 
@@ -145,6 +148,7 @@ exports.addFilm = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };
 
@@ -204,6 +208,7 @@ exports.editFilm = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };
 
@@ -233,5 +238,6 @@ exports.deleteFilm = async (req, res) => {
 		}
 	} catch (error) {
 		console.log(error);
+		return res.status(500).send({ message: 'Server Error' });
 	}
 };
