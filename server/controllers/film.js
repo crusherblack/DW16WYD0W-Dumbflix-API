@@ -1,5 +1,6 @@
 const { Film, Category } = require('../models');
 const Joi = require('@hapi/joi');
+const { response } = require('express');
 
 exports.getFilm = async (req, res) => {
 	try {
@@ -119,6 +120,14 @@ exports.addFilm = async (req, res) => {
 			});
 
 		const { category } = req.body;
+
+		const cekCategory = await Category.findOne({
+			where: {
+				id: category.id
+			}
+		});
+
+		if (!cekCategory) return res.status(400).send({ message: 'Category Not Found' });
 
 		const film = await Film.create({
 			...req.body,
