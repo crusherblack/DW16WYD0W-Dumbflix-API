@@ -33,7 +33,6 @@ exports.addTransaction = async (req, res) => {
 			startDate: Joi.date().required(),
 			dueDate: Joi.date().required(),
 			userId: Joi.number().required(),
-			attache: Joi.required(),
 			status: Joi.string().required()
 		});
 		const { error } = schema.validate(req.body);
@@ -45,7 +44,10 @@ exports.addTransaction = async (req, res) => {
 				}
 			});
 
-		const transaction = await Transaction.create(req.body);
+		const transaction = await Transaction.create({
+			...req.body,
+			attache: req.file.filename
+		});
 
 		if (transaction) {
 			const transactionResult = await Transaction.findOne({

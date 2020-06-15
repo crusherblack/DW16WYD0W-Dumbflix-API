@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 
+const { upload } = require('../middleware/uploadImage');
+
 const { auth, authAdmin } = require('../middleware/auth');
 
 const { login, register } = require('../controllers/auth');
@@ -60,7 +62,7 @@ router.delete('/category/:id', auth, authAdmin, deleteCategory);
 
 // Transcation Routes
 router.get('/transaction', getTransaction);
-router.post('/transaction', auth, authAdmin, addTransaction);
+router.post('/transaction', auth, authAdmin, upload, addTransaction);
 router.patch('/transaction/:id', auth, authAdmin, editTransaction);
 router.delete('/transaction/:id', auth, authAdmin, deleteTransaction);
 
@@ -70,5 +72,11 @@ router.get('/film/:id/episodes', auth, authAdmin, getEpisodesByFilm);
 router.get('/film/:idFilm/episodes/:idEpisode', auth, authAdmin, getDetailEpisode);
 router.get('/episode/:id', auth, authAdmin, editEpisode);
 router.delete('/episode/:id', auth, authAdmin, deleteEpisode);
+
+router.get('*', function(req, res) {
+	res.status(404).send({
+		error: '404 Not Found'
+	});
+});
 
 module.exports = router;

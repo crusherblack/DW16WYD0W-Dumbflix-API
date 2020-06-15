@@ -1,8 +1,22 @@
 const { Film, Category } = require('../models');
 const Joi = require('@hapi/joi');
+const { response } = require('express');
 
 exports.getFilm = async (req, res) => {
 	try {
+		const page = 0;
+		const pageSize = 10;
+
+		const paginate = ({ page, pageSize }) => {
+			const offset = page * pageSize;
+			const limit = pageSize;
+
+			return {
+				offset,
+				limit
+			};
+		};
+
 		const film = await Film.findAll({
 			include: {
 				model: Category,
@@ -11,12 +25,17 @@ exports.getFilm = async (req, res) => {
 					exclude: [ 'createdAt', 'updatedAt' ]
 				}
 			},
-			attributes: { exclude: [ 'createdAt', 'updatedAt', 'categoryId' ] }
+			attributes: { exclude: [ 'createdAt', 'updatedAt', 'categoryId' ] },
+			...paginate({ page, pageSize })
 		});
 
 		if (film) {
 			return res.send({
-				data: film
+				data: film,
+				paginationInfo: {
+					currentPage: page + 1,
+					totalData: await Film.count()
+				}
 			});
 		} else {
 			return res.status(400).send({ message: 'Films Not Found' });
@@ -119,6 +138,14 @@ exports.addFilm = async (req, res) => {
 			});
 
 		const { category } = req.body;
+
+		const cekCategory = await Category.findOne({
+			where: {
+				id: category.id
+			}
+		});
+
+		if (!cekCategory) return res.status(400).send({ message: 'Category Not Found' });
 
 		const film = await Film.create({
 			...req.body,
