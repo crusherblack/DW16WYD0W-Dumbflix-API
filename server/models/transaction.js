@@ -1,19 +1,19 @@
 'use strict';
 module.exports = (sequelize, DataTypes) => {
 	const Transaction = sequelize.define(
-		'Transaction',
-		{
+		'Transaction', {
 			startDate: DataTypes.DATEONLY,
 			dueDate: DataTypes.DATEONLY,
 			userId: DataTypes.INTEGER,
 			attache: DataTypes.STRING,
 			status: DataTypes.STRING
-		},
-		{ tableName: 'transaction' }
+		}, {
+			tableName: 'transaction'
+		}
 	);
-	Transaction.associate = function(models) {
+	Transaction.associate = function (models) {
 		Transaction.belongsTo(models.User, {
-			as: 'userld',
+			as: 'userInfo',
 			foreignKey: {
 				name: 'userId'
 			}

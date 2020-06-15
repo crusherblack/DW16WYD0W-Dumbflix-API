@@ -1,4 +1,7 @@
-const { Transaction, User } = require('../models');
+const {
+	Transaction,
+	User
+} = require('../models');
 const Joi = require('@hapi/joi');
 
 exports.getTransaction = async (req, res) => {
@@ -6,12 +9,14 @@ exports.getTransaction = async (req, res) => {
 		const transaction = await Transaction.findAll({
 			include: {
 				model: User,
-				as: 'userld',
+				as: 'userInfo',
 				attributes: {
-					exclude: [ 'createdAt', 'updatedAt', 'password' ]
+					exclude: ['createdAt', 'updatedAt', 'password']
 				}
 			},
-			attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+			attributes: {
+				exclude: ['createdAt', 'updatedAt']
+			}
 		});
 
 		if (transaction) {
@@ -19,11 +24,15 @@ exports.getTransaction = async (req, res) => {
 				data: transaction
 			});
 		} else {
-			return res.status(400).send({ message: 'Transaction Not Found' });
+			return res.status(400).send({
+				message: 'Transaction Not Found'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			message: 'Server Error'
+		});
 	}
 };
 
@@ -35,7 +44,9 @@ exports.addTransaction = async (req, res) => {
 			userId: Joi.number().required(),
 			status: Joi.string().required()
 		});
-		const { error } = schema.validate(req.body);
+		const {
+			error
+		} = schema.validate(req.body);
 
 		if (error)
 			return res.status(400).send({
@@ -56,29 +67,37 @@ exports.addTransaction = async (req, res) => {
 				},
 				include: {
 					model: User,
-					as: 'userld',
+					as: 'userInfo',
 					attributes: {
-						exclude: [ 'createdAt', 'updatedAt', 'password' ]
+						exclude: ['createdAt', 'updatedAt', 'password']
 					}
 				},
-				attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+				attributes: {
+					exclude: ['createdAt', 'updatedAt']
+				}
 			});
 
 			return res.send({
 				data: transactionResult
 			});
 		} else {
-			return res.status(400).send({ message: 'Please Try Again' });
+			return res.status(400).send({
+				message: 'Please Try Again'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			message: 'Server Error'
+		});
 	}
 };
 
 exports.editTransaction = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const {
+			id
+		} = req.params;
 		const schema = Joi.object({
 			startDate: Joi.date().required(),
 			dueDate: Joi.date().required(),
@@ -86,7 +105,9 @@ exports.editTransaction = async (req, res) => {
 			attache: Joi.required(),
 			status: Joi.string().required()
 		});
-		const { error } = schema.validate(req.body);
+		const {
+			error
+		} = schema.validate(req.body);
 
 		if (error)
 			return res.status(400).send({
@@ -108,29 +129,37 @@ exports.editTransaction = async (req, res) => {
 				},
 				include: {
 					model: User,
-					as: 'userld',
+					as: 'userInfo',
 					attributes: {
-						exclude: [ 'createdAt', 'updatedAt', 'password' ]
+						exclude: ['createdAt', 'updatedAt', 'password']
 					}
 				},
-				attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+				attributes: {
+					exclude: ['createdAt', 'updatedAt']
+				}
 			});
 
 			return res.send({
 				data: resultTransaction
 			});
 		} else {
-			return res.status(400).send({ message: 'Please Try Again' });
+			return res.status(400).send({
+				message: 'Please Try Again'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			message: 'Server Error'
+		});
 	}
 };
 
 exports.deleteTransaction = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const {
+			id
+		} = req.params;
 		const transaction = await Transaction.findOne({
 			where: {
 				id
@@ -150,10 +179,14 @@ exports.deleteTransaction = async (req, res) => {
 				}
 			});
 		} else {
-			return res.status(400).send({ message: 'Transaction Not Found' });
+			return res.status(400).send({
+				message: 'Transaction Not Found'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			message: 'Server Error'
+		});
 	}
 };

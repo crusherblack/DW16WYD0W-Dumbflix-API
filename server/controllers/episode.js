@@ -80,7 +80,7 @@ exports.getDetailEpisode = async (req, res) => {
 			message: 'Film Not Found'
 		});
 
-		const episode = await Episode.findAll({
+		const episode = await Episode.findOne({
 			where: {
 				id: idEpisode
 			},
@@ -123,6 +123,20 @@ exports.getDetailEpisode = async (req, res) => {
 
 exports.addEpisode = async (req, res) => {
 	try {
+		const {
+			filmId
+		} = req.body
+
+		const film = await Film.findOne({
+			where: {
+				id: filmId
+			}
+		});
+
+		if (!film) return res.status(400).send({
+			message: 'Film Not Found'
+		});
+
 		const schema = Joi.object({
 			title: Joi.string().min(3).required(),
 			thumbnailFilm: Joi.string().required(),
@@ -178,9 +192,12 @@ exports.addEpisode = async (req, res) => {
 exports.editEpisode = async (req, res) => {
 	try {
 		const {
-			id,
-			filmId
+			id
 		} = req.params;
+
+		const {
+			filmId
+		} = req.body
 
 		const film = await Film.findOne({
 			where: {
@@ -280,7 +297,10 @@ exports.deleteEpisode = async (req, res) => {
 			});
 		} else {
 			return res.status(400).send({
-				message: 'Episode Not Found'
+				error: {
+					message: 'Episode Not Found'
+				}
+
 			});
 		}
 	} catch (error) {
