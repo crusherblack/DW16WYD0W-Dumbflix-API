@@ -1,9 +1,25 @@
-const { Episode, Film, Category } = require('../models');
+const {
+	Episode,
+	Film,
+	Category
+} = require('../models');
 const Joi = require('@hapi/joi');
 
 exports.getEpisodesByFilm = async (req, res) => {
 	try {
-		const { id: filmId } = req.params;
+		const {
+			id: filmId
+		} = req.params;
+
+		const cekFilm = await Film.findOne({
+			where: {
+				id: filmId
+			}
+		})
+
+		if (!cekFilm) return res.status(400).send({
+			message: `This Film with id:${filmId} doesn't exist!!!`
+		})
 
 		const film = await Episode.findAll({
 			where: {
@@ -13,40 +29,46 @@ exports.getEpisodesByFilm = async (req, res) => {
 				model: Film,
 				as: 'film',
 				attributes: {
-					exclude: [ 'createdAt', 'updatedAt', 'categoryId' ]
+					exclude: ['createdAt', 'updatedAt', 'categoryId']
 				},
 				include: {
 					model: Category,
 					as: 'category',
 					attributes: {
-						exclude: [ 'createdAt', 'updatedAt' ]
+						exclude: ['createdAt', 'updatedAt']
 					}
 				}
 			},
 
 			attributes: {
-				exclude: [ 'createdAt', 'updatedAt', 'FilmId', 'filmId' ]
+				exclude: ['createdAt', 'updatedAt', 'FilmId', 'filmId']
 			}
 		});
 
-		//return console.log(film);
 
-		if (film) {
-			return res.send({
-				data: film
-			});
-		} else {
-			return res.status(400).send({ message: 'Films Not Found' });
-		}
+		if (!film.length) return res.status(400).send({
+			message: "This Film Doesnt Have Any Episode"
+		})
+
+
+		return res.send({
+			data: film
+		});
+
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			message: 'Server Error'
+		});
 	}
 };
 
 exports.getDetailEpisode = async (req, res) => {
 	try {
-		const { idFilm, idEpisode } = req.params;
+		const {
+			idFilm,
+			idEpisode
+		} = req.params;
 
 		const film = await Film.findOne({
 			where: {
@@ -54,7 +76,9 @@ exports.getDetailEpisode = async (req, res) => {
 			}
 		});
 
-		if (!film) return res.status(400).send({ message: 'Film Not Found' });
+		if (!film) return res.status(400).send({
+			message: 'Film Not Found'
+		});
 
 		const episode = await Episode.findAll({
 			where: {
@@ -64,19 +88,19 @@ exports.getDetailEpisode = async (req, res) => {
 				model: Film,
 				as: 'film',
 				attributes: {
-					exclude: [ 'createdAt', 'updatedAt', 'categoryId' ]
+					exclude: ['createdAt', 'updatedAt', 'categoryId']
 				},
 				include: {
 					model: Category,
 					as: 'category',
 					attributes: {
-						exclude: [ 'createdAt', 'updatedAt' ]
+						exclude: ['createdAt', 'updatedAt']
 					}
 				}
 			},
 
 			attributes: {
-				exclude: [ 'createdAt', 'updatedAt', 'FilmId', 'filmId' ]
+				exclude: ['createdAt', 'updatedAt', 'FilmId', 'filmId']
 			}
 		});
 
@@ -85,11 +109,15 @@ exports.getDetailEpisode = async (req, res) => {
 				data: episode
 			});
 		} else {
-			return res.status(400).send({ message: 'Episode Not Found' });
+			return res.status(400).send({
+				message: 'Episode Not Found'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			message: 'Server Error'
+		});
 	}
 };
 
@@ -101,7 +129,9 @@ exports.addEpisode = async (req, res) => {
 			linkFilm: Joi.string().required(),
 			filmId: Joi.number().required()
 		});
-		const { error } = schema.validate(req.body);
+		const {
+			error
+		} = schema.validate(req.body);
 
 		if (error)
 			return res.status(400).send({
@@ -121,27 +151,46 @@ exports.addEpisode = async (req, res) => {
 					model: Film,
 					as: 'film',
 					attributes: {
-						exclude: [ 'createdAt', 'updatedAt' ]
+						exclude: ['createdAt', 'updatedAt']
 					}
 				},
-				attributes: { exclude: [ 'createdAt', 'updatedAt', 'filmId', 'FilmId' ] }
+				attributes: {
+					exclude: ['createdAt', 'updatedAt', 'filmId', 'FilmId']
+				}
 			});
 
 			return res.send({
 				data: episodeResult
 			});
 		} else {
-			return res.status(400).send({ message: 'Please Try Again' });
+			return res.status(400).send({
+				message: 'Please Try Again'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			message: 'Server Error'
+		});
 	}
 };
 
 exports.editEpisode = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const {
+			id,
+			filmId
+		} = req.params;
+
+		const film = await Film.findOne({
+			where: {
+				id: filmId
+			}
+		});
+
+		if (!film) return res.status(400).send({
+			message: 'Film Not Found'
+		});
 
 		const schema = Joi.object({
 			title: Joi.string().min(3).required(),
@@ -149,7 +198,9 @@ exports.editEpisode = async (req, res) => {
 			linkFilm: Joi.string().required(),
 			filmId: Joi.number().required()
 		});
-		const { error } = schema.validate(req.body);
+		const {
+			error
+		} = schema.validate(req.body);
 
 		if (error)
 			return res.status(400).send({
@@ -173,36 +224,42 @@ exports.editEpisode = async (req, res) => {
 					model: Film,
 					as: 'film',
 					attributes: {
-						exclude: [ 'createdAt', 'updatedAt', 'categoryId' ]
+						exclude: ['createdAt', 'updatedAt', 'categoryId']
 					},
 					include: {
 						model: Category,
 						as: 'category',
 						attributes: {
-							exclude: [ 'createdAt', 'updatedAt' ]
+							exclude: ['createdAt', 'updatedAt']
 						}
 					}
 				},
 
 				attributes: {
-					exclude: [ 'createdAt', 'updatedAt', 'FilmId', 'filmId' ]
+					exclude: ['createdAt', 'updatedAt', 'FilmId', 'filmId']
 				}
 			});
 			return res.send({
 				data: episodeResult
 			});
 		} else {
-			return res.status(400).send({ message: 'Films Not Found' });
+			return res.status(400).send({
+				message: 'Films Not Found'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			message: 'Server Error'
+		});
 	}
 };
 
 exports.deleteEpisode = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const {
+			id
+		} = req.params;
 		const episode = await Episode.findOne({
 			where: {
 				id
@@ -222,10 +279,14 @@ exports.deleteEpisode = async (req, res) => {
 				}
 			});
 		} else {
-			return res.status(400).send({ message: 'Episode Not Found' });
+			return res.status(400).send({
+				message: 'Episode Not Found'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			message: 'Server Error'
+		});
 	}
 };

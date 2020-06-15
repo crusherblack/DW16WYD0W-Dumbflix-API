@@ -1,10 +1,14 @@
-const { User } = require('../models');
+const {
+	User
+} = require('../models');
 const Joi = require('@hapi/joi');
 
 exports.getUser = async (req, res) => {
 	try {
 		const user = await User.findAll({
-			attributes: { exclude: [ 'password' ] }
+			attributes: {
+				exclude: ['password']
+			}
 		});
 
 		if (user) {
@@ -12,11 +16,15 @@ exports.getUser = async (req, res) => {
 				data: user
 			});
 		} else {
-			return res.status(500).send({ message: 'Server Error' });
+			return res.status(500).send({
+				message: 'Server Error'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			message: 'Server Error'
+		});
 	}
 };
 
@@ -25,11 +33,13 @@ exports.deleteUser = async (req, res) => {
 		where: {
 			id: req.user.id
 		},
-		attributes: [ 'role' ]
+		attributes: ['role']
 	});
 
 	if (authUserRole.role == 1) {
-		const { id } = req.params;
+		const {
+			id
+		} = req.params;
 
 		try {
 			const user = await User.findOne({
@@ -51,13 +61,19 @@ exports.deleteUser = async (req, res) => {
 					}
 				});
 			} else {
-				return res.status(400).send({ message: 'User Not Found' });
+				return res.status(400).send({
+					message: 'User Not Found'
+				});
 			}
 		} catch (error) {
 			console.log(error);
 		}
 	} else {
-		return res.status(400).send({ message: 'Unauthorized User' });
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(400).send({
+			message: 'Unauthorized User'
+		});
+		return res.status(500).send({
+			message: 'Server Error'
+		});
 	}
 };
