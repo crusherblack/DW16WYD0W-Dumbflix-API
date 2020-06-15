@@ -50,6 +50,7 @@ exports.getFilm = async (req, res) => {
 				data: film,
 				paginationInfo: {
 					currentPage: page + 1,
+					limit: limitQuery,
 					totalData: await Film.count()
 				}
 			});
