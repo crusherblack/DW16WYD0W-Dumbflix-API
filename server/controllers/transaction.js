@@ -1,7 +1,4 @@
-const {
-	Transaction,
-	User
-} = require('../models');
+const { Transaction, User } = require('../models');
 const Joi = require('@hapi/joi');
 
 exports.getTransaction = async (req, res) => {
@@ -11,11 +8,11 @@ exports.getTransaction = async (req, res) => {
 				model: User,
 				as: 'userInfo',
 				attributes: {
-					exclude: ['createdAt', 'updatedAt', 'password']
+					exclude: [ 'createdAt', 'updatedAt', 'password' ]
 				}
 			},
 			attributes: {
-				exclude: ['createdAt', 'updatedAt']
+				exclude: [ 'createdAt', 'updatedAt' ]
 			}
 		});
 
@@ -44,9 +41,7 @@ exports.addTransaction = async (req, res) => {
 			userId: Joi.number().required(),
 			status: Joi.string().required()
 		});
-		const {
-			error
-		} = schema.validate(req.body);
+		const { error } = schema.validate(req.body);
 
 		if (error)
 			return res.status(400).send({
@@ -69,11 +64,11 @@ exports.addTransaction = async (req, res) => {
 					model: User,
 					as: 'userInfo',
 					attributes: {
-						exclude: ['createdAt', 'updatedAt', 'password']
+						exclude: [ 'createdAt', 'updatedAt', 'password' ]
 					}
 				},
 				attributes: {
-					exclude: ['createdAt', 'updatedAt']
+					exclude: [ 'createdAt', 'updatedAt' ]
 				}
 			});
 
@@ -95,9 +90,9 @@ exports.addTransaction = async (req, res) => {
 
 exports.editTransaction = async (req, res) => {
 	try {
-		const {
-			id
-		} = req.params;
+		const { id } = req.params;
+		const { status, userId } = req.body;
+
 		const schema = Joi.object({
 			startDate: Joi.date().required(),
 			dueDate: Joi.date().required(),
@@ -105,14 +100,25 @@ exports.editTransaction = async (req, res) => {
 			attache: Joi.required(),
 			status: Joi.string().required()
 		});
-		const {
-			error
-		} = schema.validate(req.body);
+		const { error } = schema.validate(req.body);
 
 		if (error)
 			return res.status(400).send({
 				error: {
 					message: error.details[0].message
+				}
+			});
+
+		const cekTranscation = await Transaction.findOne({
+			where: {
+				id
+			}
+		});
+
+		if (!cekTranscation)
+			return res.status(400).send({
+				error: {
+					message: 'Transcation Not Found'
 				}
 			});
 
@@ -123,6 +129,20 @@ exports.editTransaction = async (req, res) => {
 		});
 
 		if (transaction) {
+			let subscribeStatus = false;
+			if (status == 'Approved') subscribeStatus = true;
+
+			await User.update(
+				{
+					subscribe: subscribeStatus
+				},
+				{
+					where: {
+						id: userId
+					}
+				}
+			);
+
 			const resultTransaction = await Transaction.findOne({
 				where: {
 					id
@@ -131,16 +151,18 @@ exports.editTransaction = async (req, res) => {
 					model: User,
 					as: 'userInfo',
 					attributes: {
-						exclude: ['createdAt', 'updatedAt', 'password']
+						exclude: [ 'createdAt', 'updatedAt', 'password' ]
 					}
 				},
 				attributes: {
-					exclude: ['createdAt', 'updatedAt']
+					exclude: [ 'createdAt', 'updatedAt' ]
 				}
 			});
 
 			return res.send({
-				data: resultTransaction
+				data: {
+					resultTransaction
+				}
 			});
 		} else {
 			return res.status(400).send({
@@ -159,9 +181,7 @@ exports.editTransaction = async (req, res) => {
 
 exports.deleteTransaction = async (req, res) => {
 	try {
-		const {
-			id
-		} = req.params;
+		const { id } = req.params;
 		const transaction = await Transaction.findOne({
 			where: {
 				id
