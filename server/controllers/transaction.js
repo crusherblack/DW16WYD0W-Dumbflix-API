@@ -150,7 +150,9 @@ exports.editTransaction = async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		return res.status(500).send({
-			message: 'Server Error'
+			error: {
+				message: 'Server Error'
+			}
 		});
 	}
 };
@@ -186,7 +188,9 @@ exports.deleteTransaction = async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		return res.status(500).send({
-			message: 'Server Error'
+			error: {
+				message: 'Server Error'
+			}
 		});
 	}
 };

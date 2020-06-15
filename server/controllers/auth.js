@@ -1,4 +1,6 @@
-const { User } = require('../models');
+const {
+	User
+} = require('../models');
 const Joi = require('@hapi/joi');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
@@ -9,7 +11,9 @@ exports.login = async (req, res) => {
 			email: Joi.string().email().min(6).required(),
 			password: Joi.string().min(6).required()
 		});
-		const { error } = schema.validate(req.body);
+		const {
+			error
+		} = schema.validate(req.body);
 
 		if (error)
 			res.status(400).send({
@@ -18,18 +22,29 @@ exports.login = async (req, res) => {
 				}
 			});
 
-		const { email, password } = req.body;
+		const {
+			email,
+			password
+		} = req.body;
 		const user = await User.findOne({
-			where: { email }
+			where: {
+				email
+			}
 		});
 
-		if (!user) return res.status(400).send({ message: 'Invalid Login' });
+		if (!user) return res.status(400).send({
+			message: 'Invalid Login'
+		});
 
 		const validPass = await bcrypt.compare(password, user.password);
 
-		if (!validPass) return res.status(400).send({ message: 'Invalid Login' });
+		if (!validPass) return res.status(400).send({
+			message: 'Invalid Login'
+		});
 
-		const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
+		const token = jwt.sign({
+			id: user.id
+		}, process.env.SECRET_KEY);
 
 		res.send({
 			data: {
@@ -39,7 +54,11 @@ exports.login = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			error: {
+				message: 'Server Error'
+			}
+		});
 	}
 };
 
@@ -54,7 +73,9 @@ exports.register = async (req, res) => {
 			address: Joi.string().min(10).required(),
 			role: Joi.string().required()
 		});
-		const { error } = schema.validate(req.body);
+		const {
+			error
+		} = schema.validate(req.body);
 
 		console.log(req.body);
 
@@ -65,7 +86,10 @@ exports.register = async (req, res) => {
 				}
 			});
 
-		const { email, password } = req.body;
+		const {
+			email,
+			password
+		} = req.body;
 
 		const checkEmail = await User.findOne({
 			where: {
@@ -87,7 +111,9 @@ exports.register = async (req, res) => {
 			password: hashedPassword,
 			subscribe
 		});
-		const token = jwt.sign({ id: user.id }, process.env.SECRET_KEY);
+		const token = jwt.sign({
+			id: user.id
+		}, process.env.SECRET_KEY);
 
 		res.send({
 			data: {
@@ -97,6 +123,10 @@ exports.register = async (req, res) => {
 		});
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			error: {
+				message: 'Server Error'
+			}
+		});
 	}
 };

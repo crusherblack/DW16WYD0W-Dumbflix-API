@@ -23,7 +23,9 @@ exports.getUser = async (req, res) => {
 	} catch (error) {
 		console.log(error);
 		return res.status(500).send({
-			message: 'Server Error'
+			error: {
+				message: 'Server Error'
+			}
 		});
 	}
 };
@@ -67,13 +69,18 @@ exports.deleteUser = async (req, res) => {
 			}
 		} catch (error) {
 			console.log(error);
+			return res.status(500).send({
+				error: {
+					message: 'Server Error'
+				}
+			});
 		}
 	} else {
 		return res.status(400).send({
-			message: 'Unauthorized User'
+			error: {
+				message: 'Unauthorized User'
+			}
 		});
-		return res.status(500).send({
-			message: 'Server Error'
-		});
+
 	}
 };

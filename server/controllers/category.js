@@ -1,10 +1,14 @@
-const { Category } = require('../models');
+const {
+	Category
+} = require('../models');
 const Joi = require('@hapi/joi');
 
 exports.getCategory = async (req, res) => {
 	try {
 		const category = await Category.findAll({
-			attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+			attributes: {
+				exclude: ['createdAt', 'updatedAt']
+			}
 		});
 
 		if (category) {
@@ -12,11 +16,17 @@ exports.getCategory = async (req, res) => {
 				data: category
 			});
 		} else {
-			return res.status(400).send({ message: 'Category Not Found' });
+			return res.status(400).send({
+				message: 'Category Not Found'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			error: {
+				message: 'Server Error'
+			}
+		});
 	}
 };
 
@@ -25,7 +35,9 @@ exports.addCategory = async (req, res) => {
 		const schema = Joi.object({
 			name: Joi.string().min(3).required()
 		});
-		const { error } = schema.validate(req.body);
+		const {
+			error
+		} = schema.validate(req.body);
 
 		if (error)
 			return res.status(400).send({
@@ -41,27 +53,39 @@ exports.addCategory = async (req, res) => {
 				where: {
 					id: category.id
 				},
-				attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+				attributes: {
+					exclude: ['createdAt', 'updatedAt']
+				}
 			});
 			return res.send({
 				data: categoryResult
 			});
 		} else {
-			return res.status(400).send({ message: 'Please Try Again' });
+			return res.status(400).send({
+				message: 'Please Try Again'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			error: {
+				message: 'Server Error'
+			}
+		});
 	}
 };
 
 exports.editCategory = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const {
+			id
+		} = req.params;
 		const schema = Joi.object({
 			name: Joi.string().min(3).required()
 		});
-		const { error } = schema.validate(req.body);
+		const {
+			error
+		} = schema.validate(req.body);
 
 		if (error)
 			return res.status(400).send({
@@ -81,24 +105,34 @@ exports.editCategory = async (req, res) => {
 				where: {
 					id
 				},
-				attributes: { exclude: [ 'createdAt', 'updatedAt' ] }
+				attributes: {
+					exclude: ['createdAt', 'updatedAt']
+				}
 			});
 
 			return res.send({
 				data: categoryResult
 			});
 		} else {
-			return res.status(400).send({ message: 'Please Try Again' });
+			return res.status(400).send({
+				message: 'Please Try Again'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			error: {
+				message: 'Server Error'
+			}
+		});
 	}
 };
 
 exports.deleteCategory = async (req, res) => {
 	try {
-		const { id } = req.params;
+		const {
+			id
+		} = req.params;
 		const film = await Category.findOne({
 			where: {
 				id
@@ -118,10 +152,16 @@ exports.deleteCategory = async (req, res) => {
 				}
 			});
 		} else {
-			return res.status(400).send({ message: 'Category Not Found' });
+			return res.status(400).send({
+				message: 'Category Not Found'
+			});
 		}
 	} catch (error) {
 		console.log(error);
-		return res.status(500).send({ message: 'Server Error' });
+		return res.status(500).send({
+			error: {
+				message: 'Server Error'
+			}
+		});
 	}
 };
