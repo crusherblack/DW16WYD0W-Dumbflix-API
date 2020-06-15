@@ -80,7 +80,7 @@ router.delete('/transaction/:id', auth, authAdmin, deleteTransaction);
 // Episode Routes
 router.post('/episode', auth, authAdmin, addEpisode);
 router.get('/film/:id/episodes', auth, authAdmin, getEpisodesByFilm);
-router.get('/film/:idFilm/episodes/:idEpisode', auth, authAdmin, getDetailEpisode);
+router.get('/episodes/:idEpisode', auth, authAdmin, getDetailEpisode);
 router.patch('/episode/:id', auth, authAdmin, editEpisode);
 router.delete('/episode/:id', auth, authAdmin, deleteEpisode);
 

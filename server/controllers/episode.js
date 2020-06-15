@@ -66,19 +66,9 @@ exports.getEpisodesByFilm = async (req, res) => {
 exports.getDetailEpisode = async (req, res) => {
 	try {
 		const {
-			idFilm,
 			idEpisode
 		} = req.params;
 
-		const film = await Film.findOne({
-			where: {
-				id: idFilm
-			}
-		});
-
-		if (!film) return res.status(400).send({
-			message: 'Film Not Found'
-		});
 
 		const episode = await Episode.findOne({
 			where: {
