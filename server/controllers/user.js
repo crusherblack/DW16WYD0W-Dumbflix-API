@@ -31,56 +31,39 @@ exports.getUser = async (req, res) => {
 };
 
 exports.deleteUser = async (req, res) => {
-	const authUserRole = await User.findOne({
-		where: {
-			id: req.user.id
-		},
-		attributes: ['role']
-	});
+	try {
+		const user = await User.findOne({
+			where: {
+				id
+			}
+		});
 
-	if (authUserRole.role == 1) {
-		const {
-			id
-		} = req.params;
-
-		try {
-			const user = await User.findOne({
+		if (user) {
+			const deleteUser = await User.destroy({
 				where: {
 					id
 				}
 			});
 
-			if (user) {
-				const deleteUser = await User.destroy({
-					where: {
-						id
-					}
-				});
-
-				return res.send({
-					data: {
-						id
-					}
-				});
-			} else {
-				return res.status(400).send({
-					message: 'User Not Found'
-				});
-			}
-		} catch (error) {
-			console.log(error);
-			return res.status(500).send({
+			return res.send({
+				data: {
+					id
+				}
+			});
+		} else {
+			return res.status(400).send({
 				error: {
-					message: 'Server Error'
+					message: 'User Not Found'
 				}
 			});
 		}
-	} else {
-		return res.status(400).send({
+	} catch (error) {
+		console.log(error);
+		return res.status(500).send({
 			error: {
-				message: 'Unauthorized User'
+				message: 'Server Error'
 			}
 		});
-
 	}
+
 };
